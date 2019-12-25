@@ -34,14 +34,6 @@ app.get('/metrics', function (req, res) {
         res.status(200).send(result);
     });
 });
-app.get('/', function (req, res) {
-    res.render('home.ejs');
-    res.end();
-});
-app.get('/hello/:name', function (req, res) {
-    res.render('hello.ejs', { name: req.params.name });
-    res.end();
-});
 app.get('/metrics.json', function (req, res) {
     metrics.get(function (err, data) {
         if (err)
@@ -57,12 +49,12 @@ app.use(session({
     saveUninitialized: true
 }));
 //ROUTER CLASS  ----------- GET FUNCTION --------------
-authRouter.get('/home', function (req, res) {
+authRouter.get('/', function (req, res) {
     res.render('home.ejs');
 });
 authRouter.get('/login', function (req, res) {
     var errormsg = "";
-    res.render('login.ejs', { errormsg: errormsg });
+    res.render('login', { errormsg: errormsg });
 });
 authRouter.get('/register', function (req, res) {
     res.render('register.ejs');
@@ -75,22 +67,25 @@ authRouter.get('/logout', function (req, res) {
 });
 //ROUTER CLASS  ----------- POST FUNCTION --------------
 authRouter.post('/login', function (req, res, next) {
-    var errormsg = ""; //to print an error message 
+    var errormsg = ""; //to print an error message
+    var errormsg2 = ""; //to print an error message 
     console.log('je suis là ');
     dbUser.get(req.body.username, function (err, result) {
-        if (err)
-            next(err);
-        {
+        console.log("ici" + req.body.password);
+        if (err || result === undefined) {
             errormsg = "there is an error with username and/or password please retry";
-            res.render({ errormsg: errormsg }, 'login.ejs');
+            console.log("tres bof");
+            res.render('home.ejs', { errormsg: errormsg });
         }
-        if (result === undefined || !result.validatePassword(req.body.password)) {
-            errormsg = "password is incorrect";
-            res.redirect('/login', { errormsg: errormsg });
+        else if (result.validatePassword(req.body.password) === false) {
+            errormsg2 = "password is incorrect";
+            console.log("bof");
+            res.render('home.ejs', { errormsg: errormsg });
         }
-        else {
+        else if (result.validatePassword(req.body.password) === true) {
             req.session.loggedIn = true;
             req.session.user = result;
+            console.log("okkkk");
             res.redirect('/hello');
         }
     });
@@ -169,7 +164,7 @@ var authCheck = function (req, res, next) {
         res.redirect('/home');
 };
 //redirecting to home profile (hello page)
-app.get('/', authCheck, function (req, res) {
+app.get('/hello', authCheck, function (req, res) {
     res.render('hello', { name: req.session.username });
 });
 app.listen(port, function (err) {

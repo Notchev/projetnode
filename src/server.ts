@@ -18,7 +18,7 @@ const authRouter = express.Router()
  
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(bodyparser.json())
-app.use(bodyparser.urlencoded())
+app.use(bodyparser.urlencoded({ extended: true }))
 
 
 app.set('views', __dirname + "/view")
@@ -42,17 +42,6 @@ app.get('/metrics', (req: any, res: any) => {
 	)
 })
 
-app.get('/', (req: any, res: any) => {
-	res.render('home.ejs')
-	res.end()
-})
-
-
-
-app.get('/hello/:name', (req: any, res: any) => {
-	res.render('hello.ejs', { name: req.params.name })
-	res.end()
-})
 
 
 
@@ -66,8 +55,6 @@ app.get('/metrics.json', (req: any, res: any) => {
 
 
 
-
-
 /* USER */
 
 app.use(session({
@@ -78,7 +65,7 @@ app.use(session({
 }))
 
 //ROUTER CLASS  ----------- GET FUNCTION --------------
-authRouter.get('/home', (req: any, res: any) => {
+authRouter.get('/', (req: any, res: any) => {
 	res.render('home.ejs')
 })
 
@@ -100,37 +87,29 @@ authRouter.get('/logout', (req: any, res: any) => {
 
 //ROUTER CLASS  ----------- POST FUNCTION --------------
 
-authRouter.post('/login', (req: any, res: any, next: any) => {
-	let errormsg : string = ""  //to print an error message
-	let errormsg2 : string = ""  //to print an error message 
- 
+app.post('/login', (req: any, res: any, next: any) => {
+
 	console.log('je suis là ')	
 	dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-		console.log("ici"+req.body.username)
-		if (err || result === undefined ) 
-		{
-			errormsg = "there is an error with username and/or password please retry"
-			console.log("tres bof")
-
-			res.render('login.ejs',{errormsg : errormsg})
-		}
-		else if (result.validatePassword(req.body.password)===false) {
-			errormsg2 = "password is incorrect"
-			console.log("bof")
-
-			res.render('hello.ejs',{errormsg : errormsg}, )
-		} 
-		else {
+		console.log("ici"+req.body.password)
+		if (result !== undefined && result !== null && result.validatePassword(req.body.password)){
 			req.session.loggedIn = true
 			req.session.user = result
 			console.log("okkkk")
 
 			res.redirect('/hello')
 		}
+		else 
+		{
+
+			console.log("merde")
+			res.redirect('/home')
+
+		}
 	})
 })
 
-authRouter.post('/register', (req: any, res: any, next: any) => {
+app.post('/register', (req: any, res: any, next: any) => {
 	let errormsgregister : string = ""  //to print an error message 
 	console.log('je suis là ')	
 	dbUser.get(req.body.username, (err: Error | null, result?: User) => {
@@ -160,15 +139,18 @@ authRouter.post('/register', (req: any, res: any, next: any) => {
 })
 })
 
-authRouter.post('/logout',  (req: any, res: any, next: any) => {
+app.post('/logout',  (req: any, res: any, next: any) => {
 	console.log('okkkk')
 	res.redirect('/home')
 })
 
+app.use(authRouter)
+
+
 
 /////// NEW USER /////////////
 
-app.use(authRouter)
+
 
 const userRouter = express.Router()
 
@@ -211,7 +193,7 @@ const authCheck = function (req: any, res: any, next: any) {
 
 //redirecting to home profile (hello page)
 app.get('/hello', authCheck, (req: any, res: any) => {
-	res.render('hello', { name: req.session.username })
+	res.render('hello', { name : req.session.user.username })
 })
 
 

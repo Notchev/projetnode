@@ -3,7 +3,7 @@ import { UserHandler, User } from '../src/user'
 const dbUser = new UserHandler('./db/users') //create or open a levelDB database
 
 const users = [
-    new User("a", "a@a", "a"),
+    new User("a", "a@a", "mdp"),
     new User("b", "b@b", "b")
   ];
   
