@@ -5,23 +5,74 @@
 	</head>
 	<body class="container">
 		<div class="col-md-6 col-md-offset-3">
-			<h1>Hello <%= name %></h1>
+			<h1>Hello</h1>
 			<button class="btn btn-success" id="show-metrics">
 				Bring the metrics
 			</button>
 			<div id="metrics"></div>
 		</div>
-		<script>
-			$('#show-metrics').click((e) => {
-				e.preventDefault();
-				
-				$.getJSON("/metrics.json", {}, (data) => {
-					const content = data.map(d => {
-						return'<br>' + 'timestamp: '+d.timestamp+', value: '+d.value+'';
-					})
-					$('#metrics').append(content.join(""));
-				});
-			})				
-		</script>
-	</body>
-</html>
+		<ul>
+			<script>
+			  $.getJSON("/metrics/", {}, (data) => {
+				const content = data.map(d => {
+				  return '<li> timestamp: '+d.timestamp+', value: '+d.value+'</li>';
+				})
+				console.log(typeof content)
+				$('#metrics').append(content.join("\n"));
+			  });
+			</script>
+		  </ul>
+			</div>
+
+			<h2> Converters : </h2>
+
+			<form class="text-justify" action="/convert" method="post">
+			  <div>
+				<label for="form_datetime">Datetime : </label>
+				<input type="datetime-local" id="form_timestamp" name="dateTime" value="2019-12-24T00:00" min="1970-01-01T00:00" max="2100-12-31T23:59">
+				<p><%= datetime === "" ? "" : datetime %></p>
+			  </div>
+			  <button class="btn btn-primary" type="submit" value="Submit">Convert datetime into timestamp</button>
+			</form>
+		
+			<br/>
+			<form class="text-justify" action="/convert2" method="post">
+			  <div>
+				<label for="form_timestamp">Timestamp : </label>
+				<input id="form_timestamp" type="number" name="timestamp" min="0"/>
+				<p><%= timestamp === "" ? "" : timestamp %></p>
+			  </div>
+			  <button class="btn btn-primary" type="submit" value="Submit">Convert timestamp into datetime</button>
+			</form>
+		
+			<br/>
+		
+			<h2> Now add or delete your metrics !</h2>
+			<form class="text-justify" action="/add" method="post">
+			  <div>
+				<label for="form_timestamp">Timestamp : </label>
+				<input id="form_timestamp" type="number" name="timestamp" min="0"/>
+				<label for="form_timestamp">, Value: </label>
+				<input id="form_timestamp" type="number" name="value" />
+				<button class="btn btn-primary" type="submit" value="Submit">Add</button>
+			  </div>
+			</form>
+		
+			<form class="text-justify" action="/delete" method="post">
+			  <div>
+				<label for="form_timestamp">Timestamp : </label>
+				<input id="form_timestamp" type="number" name="timestamp" min="0"/>
+				<button class="btn btn-primary" type="submit" value="Submit">Delete</button>
+			  </div>
+			</form>
+		
+			<br/>
+			<br/>
+		
+		
+		</div>
+		
+		
+		  </body>
+		</html>
+		

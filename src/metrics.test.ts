@@ -18,7 +18,7 @@ describe('Metrics', function () {
 
   describe('#get', function () {
     it('should get empty array on non existing group', function () {
-      dbMet.getAll("0", function (err: Error | null, result?: Metric[]) {
+      dbMet.getAll("0",  function (err: Error | null, result?: Metric[] | null ) {
         expect(err).to.be.null
         expect(result).to.not.be.undefined
         expect(result).to.be.empty
@@ -29,7 +29,7 @@ describe('Metrics', function () {
       var met: Metric[] = [];
       met.push(new Metric('122211212', 10))
       dbMet.save("1", met, (err: Error | null) => {
-        dbMet.getAll("1", function (err: Error | null, result?: Metric[]) {
+        dbMet.getAll("1", function (err: Error | null, result?: Metric[] | null ) {
 
           expect(err).to.be.null
           expect(result).to.not.be.undefined

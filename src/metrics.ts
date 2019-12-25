@@ -10,9 +10,7 @@ export class Metric {
       this.value = v
     }
 
-    getMetrics(){
-      return ('Timestamp : ' + this.timestamp + ', value : ' + this.value + '.')
-    }
+   
   }
   
 export class MetricsHandler {
@@ -32,12 +30,25 @@ export class MetricsHandler {
       stream.end()
   }
   
+  public delete(user : string, timestamp: string, callback: (error: Error | null) => void) {
+    let key : string = "metric:"+user+":"+timestamp+""
+    this.db.del(key,function (err) {
+      callback(err);
+  });
+  }
+
+  public add(user : string, timestamp: string, value : string) {
+    let key : string = "metric:"+user+":"+timestamp+""
+    let Value : string = value
+    this.db.put(key,Value, (err)=>null)
+  }
+
   public closeDB()
   {
     this.db.close()
   }
 
-	public getAll(key: string, callback: (err: Error | null, result?: Metric[]) => void) {
+	public getAll(key: string, callback: (err: Error | null, result: Metric[] | null ) => void) {
     const stream = this.db.createReadStream()
     var met: Metric[] = []
     
