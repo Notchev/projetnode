@@ -1,5 +1,5 @@
 import express = require('express')
-import { MetricsHandler } from './metrics'
+import { MetricsHandler, Metric } from './metrics'
 import bodyparser = require('body-parser')
 import session = require('express-session')
 import levelSession = require('level-session-store')
@@ -78,12 +78,13 @@ app.use(session({
 }))
 
 //ROUTER CLASS  ----------- GET FUNCTION --------------
-authRouter.get('/', (req: any, res: any) => {
+authRouter.get('/home', (req: any, res: any) => {
 	res.render('home.ejs')
 })
 
 authRouter.get('/login', (req: any, res: any) => {
-	res.render('login.ejs')
+	let errormsg : string = ""
+	res.render('login', {errormsg : errormsg} )
 })
 
 authRouter.get('/register', (req: any, res: any) => {
@@ -100,21 +101,30 @@ authRouter.get('/logout', (req: any, res: any) => {
 //ROUTER CLASS  ----------- POST FUNCTION --------------
 
 authRouter.post('/login', (req: any, res: any, next: any) => {
-	let errormsg : string = ""  //to print an error message 
+	let errormsg : string = ""  //to print an error message
+	let errormsg2 : string = ""  //to print an error message 
+ 
 	console.log('je suis là ')	
 	dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-		if (err) next(err)
+		console.log("ici"+req.body.username)
+		if (err || result === undefined ) 
 		{
 			errormsg = "there is an error with username and/or password please retry"
-			res.render('login.ejs')
+			console.log("tres bof")
+
+			res.render('login.ejs',{errormsg : errormsg})
 		}
-		if (result === undefined || !result.validatePassword(req.body.password)) {
-			errormsg = "password is incorrect"
-			res.redirect('/login')
+		else if (result.validatePassword(req.body.password)===false) {
+			errormsg2 = "password is incorrect"
+			console.log("bof")
+
+			res.render('hello.ejs',{errormsg : errormsg}, )
 		} 
 		else {
 			req.session.loggedIn = true
 			req.session.user = result
+			console.log("okkkk")
+
 			res.redirect('/hello')
 		}
 	})
@@ -198,8 +208,9 @@ const authCheck = function (req: any, res: any, next: any) {
 	} else res.redirect('/home')
 }
  
+
 //redirecting to home profile (hello page)
-app.get('/', authCheck, (req: any, res: any) => {
+app.get('/hello', authCheck, (req: any, res: any) => {
 	res.render('hello', { name: req.session.username })
 })
 

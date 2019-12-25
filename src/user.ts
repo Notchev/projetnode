@@ -14,7 +14,6 @@ export class User {
   constructor(username: string, email: string, password: string, passwordHashed: boolean = false) {
     this.username = username
     this.email = email
-    this.password = password 
     
 
     if (!passwordHashed) {
@@ -59,6 +58,7 @@ export class UserHandler {
 
   public get(username: string, callback: (err: Error | null, result?: User) => void) {
     this.db.get(`user:${username}`, function (err: Error, data: any) {
+      console.log(username)
       if (err) callback(err)
       else if (data === undefined) callback(null, data)
       callback(null, User.fromDb(username, data))

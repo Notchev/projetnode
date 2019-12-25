@@ -12,5 +12,6 @@ const users = [
     dbUser.save(user, (err: Error | null) => {
       if (err) throw err
       console.log('Data populated')
+      console.log(user)
   })
   })

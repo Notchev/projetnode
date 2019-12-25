@@ -7,7 +7,7 @@
     "start": "./node_modules/.bin/ts-node src/server.ts",
     "test": "./node_modules/.bin/mocha -r ts-node/register src/**/*.test.ts",
     "dev": "./node_modules/.bin/nodemon",
-    "populate": "./node_modules/.bin/ts-node db/populate.ts"
+    "populate": "./node_modules/.bin/ts-node bin/populate.ts"
   },
   "author": "",
   "license": "ISC",
