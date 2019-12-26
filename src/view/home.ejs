@@ -6,14 +6,14 @@
 	</head>
 	<body class="container">
 		<div class="col-md-6 col-md-offset-3">
-            <h1>Welcome to our websiteeeeeeee</h1>
+            <h1>Welcome to our metrics website</h1>
         	</body>
 </html>
 
 <div id="form">
     <p>What do you want to do ?</p>
-    <hr/>
-	<form action="/login" method="post">
+   
+<!--	<form action="/login" method="post">
 		<div class="form-group">
 				<label for="form_username">Username</label>
 				<input id="form_username" type="text" name="username" />
@@ -28,11 +28,13 @@
       </div>
       <button class="btn btn-primary btn-block" type="submit" value="Submit" href="/hello">Connect </button>
     </form>
+    -->
     <hr/>
-    <button class="btn btn-success btn-block" type="submit" value="Submit" href="/register" >
+    <button class="btn btn-success btn-block" type="submit" value="Submit" href="/login"  onClick='document.location.href="/login"'>
+Login    
+</button>
+    <button class="btn btn-success btn-block" type="submit" value="Submit" href="/register" onClick='document.location.href="/register"'>
       Create an account
     </button>
-    <button class="btn btn-danger"  type="submit" value="Submit" href="/logout" >
-        Logouttttt
-      </button>
+    
   </div>

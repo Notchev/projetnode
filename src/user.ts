@@ -10,21 +10,22 @@ export class UserHandler {
 
   public get(username: string, callback: (err: Error | null, result?: User) => void) {
     this.db.get(`user:${username}`, function (err: Error, data: any) {
-      console.log("JBBBB"+username)
+      console.log(username+data)
       if (err) callback(err)
       else if (data === undefined) callback(null, data)
       else callback(null, User.fromDb(username, data))
+      console.log(username+data)
     })
   }
 
-  public save(usersa: any, callback: (err: Error | null) => void) {
+  public save(usersa: User, callback: (err: Error | null) => void) {
     var user = new User(usersa.username, usersa.email, usersa.password, false) 
     this.db.put(`user:${user.username}`, `${user.password}:${user.email}`, (err: Error | null) => {
       callback(err)
     })
   }
 
-  public delete(usersa: any, callback: (err: Error | null) => void) {
+  public delete(usersa: User, callback: (err: Error | null) => void) {
     var user = new User(usersa.username, usersa.email, user.password, false) 
     this.db.del(`user:${user.username}`, `${user.getPassword}:${user.email}`, (err: Error | null) => {
    {

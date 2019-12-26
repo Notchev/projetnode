@@ -71,7 +71,7 @@ app.use(session({
 
 //ROUTER CLASS  ----------- GET FUNCTION --------------
 authRouter.get('/', (req: any, res: any) => {
-	res.render('home.ejs')
+	res.render('home')
 })
 
 authRouter.get('/login', (req: any, res: any) => {
@@ -100,7 +100,7 @@ app.post('/login', (req: any, res: any, next: any) => {
 		if (result !== undefined && result !== null && result.validatePassword(req.body.password)===true){
 			req.session.loggedIn = true
 			req.session.user = result
-			res.render('hello.ejs')
+			res.render('/')
 			console.log("okkkk")
 		}
 		else 
@@ -115,7 +115,7 @@ app.post('/register', (req: any, res: any, next: any) => {
 	let errormsgregister : string = ""  //to print an error message 
 	console.log('je suis register ')	
 	dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-		if (err) next(err)
+		if (!err || result !== undefined) 
 		{
 			errormsgregister = "username already taken please chose another one"
 			res.render('register.ejs')
@@ -208,7 +208,7 @@ userRouter.post('/', (req: any, res: any, next: any) => {
 })
 
 userRouter.post('/logout', (req: any, res: any) => {
-	res.render('home.ejs')
+	res.render('home')
 })
 
 userRouter.get('/:username', (req: any, res: any, next: any) => {
@@ -230,11 +230,12 @@ const authCheck = function (req: any, res: any, next: any) {
  
 
 //redirecting to home profile (hello page)
-app.get('/hello', authCheck, (req: any, res: any) => {
-
+app.get('/', authCheck, (req: any, res: any) => {
+	var datetime : string = ""
+	var timestamp : string = ""
 	console.log("je suis ici")
-	console.log(req.session.user.username)
-	res.render('hello.ejs', { name : req.session.user.username })
+	console.log("YOOOOO" + req.session.user.username)
+	res.render('hello', { name : req.session.user.username , datetime : datetime, timestamp : timestamp})
 })
 
 
